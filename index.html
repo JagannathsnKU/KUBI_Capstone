@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explorer Mode - Tree World</title>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#10b981">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Space Grotesk', 'Outfit', 'DM Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        /* Color Variables - Dark Theme */
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-card: #1a1a1a;
+            --bg-hover: #252525;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --accent-primary: #10b981;
+            --accent-secondary: #34d399;
+            --accent-purple: #a855f7;
+            --accent-blue: #3b82f6;
+            --accent-cyan: #06b6d4;
+            --border: #2d2d2d;
+            --gradient-tree: linear-gradient(135deg, #10b981 0%, #34d399 50%, #06b6d4 100%);
+        }
+        
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        
+        /* Floating Bubble Buttons Container */
+        .floating-buttons-container {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            pointer-events: none;
+        }
+        
+        .floating-buttons-container > * {
+            pointer-events: auto;
+        }
+        
+        /* Bubble Button Wrapper */
+        .bubble-button-wrapper {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        /* Bubble Button Base Style */
+        .bubble-btn {
+            position: relative;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.4),
+                0 0 40px rgba(16, 185, 129, 0.3),
+                inset 0 2px 8px rgba(255, 255, 255, 0.2),
+                inset 0 -2px 8px rgba(0, 0, 0, 0.3);
+            overflow: visible;
+            animation: bubbleFloat 3s ease-in-out infinite;
+        }
+        
+        .bubble-btn::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 30%;
+            width: 25%;
+            height: 25%;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            filter: blur(3px);
+            transition: all 0.3s ease;
+        }
+        
+        .bubble-icon {
+            font-size: 1.8rem;
+            position: relative;
+            z-index: 2;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+            transition: transform 0.3s ease;
+        }
+        
+        .bubble-label {
+            position: absolute;
+            bottom: -28px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 0.7rem;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            pointer-events: none;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Back Bubble Button */
+        .back-bubble {
+            background: radial-gradient(circle at 30% 30%, rgba(59, 130, 246, 0.9), rgba(37, 99, 235, 0.9));
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+        
+        .back-bubble:hover {
+            transform: scale(1.15) translateY(-5px) rotate(-5deg);
+            box-shadow: 
+                0 12px 48px rgba(59, 130, 246, 0.6),
+                0 0 60px rgba(59, 130, 246, 0.4),
+                inset 0 2px 10px rgba(255, 255, 255, 0.3),
+                inset 0 -2px 10px rgba(0, 0, 0, 0.4);
+        }
+        
+        .back-bubble:hover .bubble-icon {
+            transform: translateX(-3px) scale(1.1);
+        }
+        
+        .back-bubble:hover .bubble-label {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-2px);
+        }
+        
+        /* Leaderboard Bubble Button */
+        .leaderboard-bubble {
+            background: radial-gradient(circle at 30% 30%, rgba(16, 185, 129, 0.9), rgba(5, 150, 105, 0.9));
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+        
+        .leaderboard-bubble:hover {
+            transform: scale(1.15) translateY(-5px) rotate(5deg);
+            box-shadow: 
+                0 12px 48px rgba(16, 185, 129, 0.6),
+                0 0 60px rgba(16, 185, 129, 0.4),
+                inset 0 2px 10px rgba(255, 255, 255, 0.3),
+                inset 0 -2px 10px rgba(0, 0, 0, 0.4);
+        }
+        
+        .leaderboard-bubble:hover .bubble-icon {
+            transform: scale(1.2) rotate(15deg);
+        }
+        
+        .leaderboard-bubble:hover .bubble-label {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-2px);
+        }
+        
+        /* Share Bubble Button */
+        .share-bubble {
+            background: radial-gradient(circle at 30% 30%, rgba(139, 92, 246, 0.9), rgba(124, 58, 237, 0.9));
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+        
+        .share-bubble:hover {
+            transform: scale(1.15) translateY(-5px) rotate(-5deg);
+            box-shadow: 
+                0 12px 48px rgba(139, 92, 246, 0.6),
+                0 0 60px rgba(139, 92, 246, 0.4),
+                inset 0 2px 10px rgba(255, 255, 255, 0.3),
+                inset 0 -2px 10px rgba(0, 0, 0, 0.4);
+        }
+        
+        .share-bubble:hover .bubble-icon {
+            transform: scale(1.2) rotate(-15deg);
+        }
+        
+        .share-bubble:hover .bubble-label {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-2px);
+        }
+        
+        /* Bubble Ring Animation */
+        .bubble-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 70px;
+            height: 70px;
+            border: 2px solid rgba(16, 185, 129, 0.4);
+            border-radius: 50%;
+            animation: bubbleRing 2s infinite;
+            pointer-events: none;
+        }
+        
+        .back-bubble + .bubble-ring {
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+        
+        .share-bubble + .bubble-ring {
+            border-color: rgba(139, 92, 246, 0.4);
+        }
+        
+        /* Theme Switcher Bubble Button */
+        .theme-bubble {
+            background: radial-gradient(circle at 30% 30%, rgba(236, 72, 153, 0.9), rgba(219, 39, 119, 0.9));
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+        
+        .theme-bubble:hover {
+            transform: scale(1.15) translateY(-5px) rotate(5deg);
+            box-shadow: 
+                0 12px 48px rgba(236, 72, 153, 0.6),
+                0 0 60px rgba(236, 72, 153, 0.4),
+                inset 0 2px 10px rgba(255, 255, 255, 0.3),
+                inset 0 -2px 10px rgba(0, 0, 0, 0.4);
+        }
+        
+        .theme-bubble:hover .bubble-icon {
+            transform: scale(1.2) rotate(15deg);
+        }
+        
+        .theme-bubble:hover .bubble-label {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-2px);
+        }
+        
+        .theme-bubble + .bubble-ring {
+            border-color: rgba(236, 72, 153, 0.4);
+        }
+        
+        /* Theme Button Styles */
+        .theme-btn {
+            padding: 24px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            color: white;
+        }
+        
+        .theme-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+        
+        @keyframes bubbleFloat {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+        
+        @keyframes bubbleRing {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1.8);
+                opacity: 0;
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .floating-buttons-container {
+                top: 15px;
+                left: 15px;
+                right: 15px;
+            }
+            
+            .bubble-btn {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .bubble-icon {
+                font-size: 1.5rem;
+            }
+            
+            .bubble-label {
+                font-size: 0.65rem;
+                bottom: -26px;
+            }
+        }
+        
+        /* Floating Leaf Particles */
+        .floating-leaf {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: var(--gradient-tree);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            opacity: 0.6;
+            pointer-events: none;
+            z-index: 1;
+            animation: floatLeaf 15s infinite ease-in-out;
+        }
+        
+        @keyframes floatLeaf {
+            0% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-100px) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Glass Card with Tree Theme */
+        .tree-glass {
+            background: rgba(26, 26, 26, 0.85);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 20px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(16, 185, 129, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .tree-glass:hover {
+            border-color: rgba(16, 185, 129, 0.5);
+            box-shadow: 
+                0 12px 40px rgba(0, 0, 0, 0.5),
+                0 0 0 2px rgba(16, 185, 129, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+        }
+        
+        /* Action Button - Fruit/Orb Style */
+        .fruit-btn {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, var(--accent-primary), var(--accent-secondary));
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                0 8px 24px rgba(16, 185, 129, 0.4),
+                inset 0 2px 4px rgba(255, 255, 255, 0.3),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+        
+        .fruit-btn::before {
+            content: '';
+            position: absolute;
+            top: 15%;
+            left: 30%;
+            width: 20%;
+            height: 20%;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            filter: blur(2px);
+        }
+        
+        .fruit-btn:hover {
+            transform: scale(1.15) rotate(5deg);
+            box-shadow: 
+                0 12px 32px rgba(16, 185, 129, 0.6),
+                inset 0 2px 6px rgba(255, 255, 255, 0.4),
+                inset 0 -2px 6px rgba(0, 0, 0, 0.4);
+        }
+        
+        .fruit-btn:active {
+            transform: scale(1.05) rotate(0deg);
+        }
+        
+        /* Tree Ring Effect */
+        @keyframes treeRing {
+            0% {
+                transform: scale(0.8);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+        
+        .tree-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid var(--accent-primary);
+            border-radius: 50%;
+            animation: treeRing 2s infinite;
+        }
+        
+        /* Canvas Container */
+        #island-canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+        
+        /* UI Overlay */
+        .ui-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 10;
+            pointer-events: none;
+        }
+        
+        .ui-overlay > * {
+            pointer-events: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Leaves Background -->
+    <div class="floating-leaf" style="left: 10%; animation-delay: 0s;"></div>
+    <div class="floating-leaf" style="left: 30%; animation-delay: 2s;"></div>
+    <div class="floating-leaf" style="left: 50%; animation-delay: 4s;"></div>
+    <div class="floating-leaf" style="left: 70%; animation-delay: 6s;"></div>
+    <div class="floating-leaf" style="left: 90%; animation-delay: 8s;"></div>
+    
+    <!-- UI Overlay -->
+    <div class="ui-overlay">
+            <!-- Floating Bubble Buttons -->
+            <div class="floating-buttons-container">
+                <!-- Back to Dashboard Button -->
+                <div class="bubble-button-wrapper">
+                    <button onclick="window.location.href='professional-mode.html'" class="bubble-btn back-bubble" title="Back to Dashboard">
+                        <span class="bubble-icon">←</span>
+                        <span class="bubble-label">Dashboard</span>
+                    </button>
+                    <div class="bubble-ring"></div>
+                </div>
+                
+                <!-- Leaderboard Button -->
+                <div class="bubble-button-wrapper">
+                    <button id="leaderboard-btn" class="bubble-btn leaderboard-bubble" title="View Leaderboard">
+                        <span class="bubble-icon">🏆</span>
+                        <span class="bubble-label">Leaderboard</span>
+                    </button>
+                    <div class="bubble-ring"></div>
+                </div>
+                
+                <!-- Share Tree Button -->
+                <div class="bubble-button-wrapper">
+                    <button onclick="shareTreeScreenshot()" class="bubble-btn share-bubble" title="Share Your Tree">
+                        <span class="bubble-icon">📸</span>
+                        <span class="bubble-label">Share</span>
+                    </button>
+                    <div class="bubble-ring"></div>
+                </div>
+                
+                <!-- Theme Switcher Button -->
+                <div class="bubble-button-wrapper">
+                    <button onclick="openThemeSwitcher()" class="bubble-btn theme-bubble" title="Switch Theme">
+                        <span class="bubble-icon">🎨</span>
+                        <span class="bubble-label">Themes</span>
+                    </button>
+                    <div class="bubble-ring"></div>
+                </div>
+            </div>
+            
+            <!-- Theme Switcher Modal -->
+            <div id="theme-switcher-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                <div class="tree-glass rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                    <div class="sticky top-0 tree-glass p-6 flex items-center justify-between border-b border-emerald-500/20">
+                        <h2 class="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent flex items-center gap-3">
+                            <span>🎨</span>
+                            <span>Tree Themes</span>
+                        </h2>
+                        <button onclick="closeThemeSwitcher()" class="w-10 h-10 rounded-full bg-red-500/20 hover:bg-red-500/30 flex items-center justify-center text-white text-xl transition-all">
+                            ✕
+                        </button>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid grid-cols-2 gap-4">
+                            <button onclick="switchTreeTheme('golden')" class="theme-btn" style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.2)); border: 2px solid rgba(255, 215, 0, 0.5);">
+                                <div class="text-4xl mb-2">🥇</div>
+                                <div class="font-bold">Golden</div>
+                                <div class="text-sm opacity-75">Rank #1 Theme</div>
+                            </button>
+                            <button onclick="switchTreeTheme('silver')" class="theme-btn" style="background: linear-gradient(135deg, rgba(192, 192, 192, 0.2), rgba(169, 169, 169, 0.2)); border: 2px solid rgba(192, 192, 192, 0.5);">
+                                <div class="text-4xl mb-2">🥈</div>
+                                <div class="font-bold">Silver</div>
+                                <div class="text-sm opacity-75">Rank #2 Theme</div>
+                            </button>
+                            <button onclick="switchTreeTheme('bronze')" class="theme-btn" style="background: linear-gradient(135deg, rgba(205, 127, 50, 0.2), rgba(184, 115, 51, 0.2)); border: 2px solid rgba(205, 127, 50, 0.5);">
+                                <div class="text-4xl mb-2">🥉</div>
+                                <div class="font-bold">Bronze</div>
+                                <div class="text-sm opacity-75">Rank #3 Theme</div>
+                            </button>
+                            <button onclick="switchTreeTheme('platinum')" class="theme-btn" style="background: linear-gradient(135deg, rgba(229, 228, 226, 0.2), rgba(213, 212, 210, 0.2)); border: 2px solid rgba(229, 228, 226, 0.5);">
+                                <div class="text-4xl mb-2">💎</div>
+                                <div class="font-bold">Platinum</div>
+                                <div class="text-sm opacity-75">Top 10 Theme</div>
+                            </button>
+                            <button onclick="switchTreeTheme('diamond')" class="theme-btn" style="background: linear-gradient(135deg, rgba(185, 242, 255, 0.2), rgba(176, 224, 230, 0.2)); border: 2px solid rgba(185, 242, 255, 0.5);">
+                                <div class="text-4xl mb-2">💠</div>
+                                <div class="font-bold">Diamond</div>
+                                <div class="text-sm opacity-75">Top 25 Theme</div>
+                            </button>
+                            <button onclick="switchTreeTheme('emerald')" class="theme-btn" style="background: linear-gradient(135deg, rgba(80, 200, 120, 0.2), rgba(50, 205, 50, 0.2)); border: 2px solid rgba(80, 200, 120, 0.5);">
+                                <div class="text-4xl mb-2">💚</div>
+                                <div class="font-bold">Emerald</div>
+                                <div class="text-sm opacity-75">Top 50 Theme</div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        <!-- Leaderboard Modal -->
+        <div id="leaderboard-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div class="tree-glass rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+                <div class="sticky top-0 tree-glass p-6 flex items-center justify-between border-b border-emerald-500/20">
+                    <h2 class="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent flex items-center gap-3">
+                        <span>🏆</span>
+                        <span>Global Leaderboard</span>
+                    </h2>
+                    <button id="close-leaderboard" class="w-10 h-10 rounded-full bg-red-500/20 hover:bg-red-500/30 flex items-center justify-center text-white text-xl transition-all">
+                        ✕
+                    </button>
+                </div>
+                <div id="leaderboard-content" class="p-6">
+                    <div class="text-center py-12">
+                        <div class="inline-block w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                        <div class="text-[#cbd5e1] text-lg mb-2">Loading leaderboard...</div>
+                        <div class="text-[#94a3b8] text-sm">Fetching user data from XRPL...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Container for 3D Canvas -->
+    <canvas id="island-canvas"></canvas>
+    
+    <!-- Three.js Library -->
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.152.0/build/three.module.js"
+        }
+    }
+    </script>
+
+    <!-- ES Module bootstrap for Three.js and GLTFLoader -->
+    <script type="module">
+        import * as THREE from 'three';
+        import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.152.0/examples/jsm/loaders/GLTFLoader.js';
+        // Expose as globals for existing non-module app scripts
+        window.THREE = THREE;
+        window.GLTFLoader = GLTFLoader;
+        
+        // Add floating leaves to 3D scene
+        if (window.treeWorld) {
+            const addFloatingLeaves = () => {
+                const scene = window.treeWorld?.scene;
+                if (!scene) return;
+                
+                // Create leaf geometry
+                const leafShape = new THREE.Shape();
+                leafShape.moveTo(0, 0);
+                leafShape.lineTo(0.5, 1);
+                leafShape.lineTo(1, 0);
+                leafShape.lineTo(0.5, -0.2);
+                leafShape.lineTo(0, 0);
+                
+                const leafGeometry = new THREE.ShapeGeometry(leafShape);
+                const leafMaterial = new THREE.MeshStandardMaterial({
+                    color: 0x10b981,
+                    emissive: 0x10b981,
+                    emissiveIntensity: 0.5,
+                    side: THREE.DoubleSide
+                });
+                
+                // Create multiple floating leaves
+                for (let i = 0; i < 20; i++) {
+                    const leaf = new THREE.Mesh(leafGeometry, leafMaterial.clone());
+                    leaf.scale.set(0.3, 0.3, 0.3);
+                    leaf.position.set(
+                        (Math.random() - 0.5) * 20,
+                        Math.random() * 10 + 5,
+                        (Math.random() - 0.5) * 20
+                    );
+                    leaf.rotation.z = Math.random() * Math.PI * 2;
+                    leaf.userData.floatSpeed = 0.5 + Math.random() * 0.5;
+                    leaf.userData.rotationSpeed = (Math.random() - 0.5) * 0.02;
+                    scene.add(leaf);
+                    
+                    // Animate leaves
+                    const animate = () => {
+                        leaf.position.y += leaf.userData.floatSpeed * 0.01;
+                        leaf.rotation.z += leaf.userData.rotationSpeed;
+                        if (leaf.position.y > 15) {
+                            leaf.position.y = 5;
+                        }
+                        requestAnimationFrame(animate);
+                    };
+                    animate();
+                }
+            };
+            
+            // Wait for tree to load
+            setTimeout(addFloatingLeaves, 2000);
+        }
+    </script>
+    
+    <!-- Plaid Link (optional) -->
+    <script src="https://cdn.plaid.com/link/v2/stable/link-initialize.js" defer onerror="console.warn('Plaid Link not loaded (optional)')"></script>
+    
+    <!-- Application Scripts -->
+    <script src="config.js" defer></script>
+    <script src="model-loader.js"></script>
+    <script src="tree-world.js" defer></script>
+    <script src="plaid-integration.js" defer></script>
+    <script src="credit-score-model.js" defer></script>
+    <script src="ai-analysis.js" defer></script>
+    <script src="quest-system.js" defer></script>
+    <script src="leaderboard.js" defer></script>
+    <script src="app.js" defer></script>
+    <script src="model-editor.js" defer></script>
+    
+    <script>
+        // Share tree screenshot function
+        function shareTreeScreenshot() {
+            if (window.treeWorld && typeof window.treeWorld.shareTreeScreenshot === 'function') {
+                window.treeWorld.shareTreeScreenshot();
+            } else {
+                console.warn('Tree world not available');
+            }
+        }
+        
+        // Theme switcher functions
+        function openThemeSwitcher() {
+            const modal = document.getElementById('theme-switcher-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+        
+        function closeThemeSwitcher() {
+            const modal = document.getElementById('theme-switcher-modal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+        
+        function switchTreeTheme(themeName) {
+            if (window.treeWorld && typeof window.treeWorld.switchTheme === 'function') {
+                window.treeWorld.switchTheme(themeName);
+                closeThemeSwitcher();
+            } else {
+                console.warn('Tree world not available');
+            }
+        }
+        
+        // Close modal on outside click
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('theme-switcher-modal');
+            if (modal) {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal && !e.target.closest('.tree-glass')) {
+                        closeThemeSwitcher();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

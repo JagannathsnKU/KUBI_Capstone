@@ -1,0 +1,102 @@
+[
+  {
+    "email": "test@test.com",
+    "fullName": "Test",
+    "dateOfBirth": "1990-01-01",
+    "walletAddress": "0x123",
+    "isImmigrant": false,
+    "isStudent": false,
+    "createdAt": "2025-11-16T22:08:50.184Z",
+    "creditScore": 0,
+    "ficoPoints": 0,
+    "vcs": []
+  },
+  {
+    "email": "sgs@gmail.com",
+    "fullName": "Heet Jani",
+    "dateOfBirth": "2007-04-24",
+    "walletAddress": "aef",
+    "isImmigrant": true,
+    "isStudent": true,
+    "createdAt": "2025-11-16T22:11:17.263Z",
+    "creditScore": 0,
+    "ficoPoints": 0,
+    "vcs": [
+      {
+        "id": "vc:education:aef:1763331077263",
+        "type": "EducationDegree",
+        "issuerDid": "did:xrpl:EducationIssuer:001",
+        "subjectDid": "did:xrpl:user:aef",
+        "credentialSubject": {
+          "degreeType": "masters",
+          "institutionName": "aef",
+          "graduationYear": "2029",
+          "verified": true
+        },
+        "issuanceDate": "2025-11-16T22:11:17.263Z",
+        "expirationDate": "2026-11-16T22:11:17.263Z"
+      }
+    ]
+  },
+  {
+    "email": "heet@gmail.com",
+    "fullName": "Heet Jani",
+    "dateOfBirth": "2007-04-24",
+    "walletAddress": "0x3Dc88401919665Ee05159985656A139ecEb072bb",
+    "isImmigrant": true,
+    "isStudent": true,
+    "createdAt": "2025-11-16T22:29:05.379Z",
+    "creditScore": null,
+    "ficoPoints": 0,
+    "vcs": [
+      {
+        "id": "vc:education:0x3Dc88401919665Ee05159985656A139ecEb072bb:1763332145379",
+        "type": "EducationDegree",
+        "issuerDid": "did:xrpl:EducationIssuer:001",
+        "subjectDid": "did:xrpl:user:0x3Dc88401",
+        "credentialSubject": {
+          "degreeType": "masters",
+          "institutionName": "aeffa",
+          "graduationYear": "2029",
+          "verified": true
+        },
+        "issuanceDate": "2025-11-16T22:29:05.379Z",
+        "expirationDate": "2026-11-16T22:29:05.379Z"
+      }
+    ],
+    "plaidConnected": false,
+    "plaidAccessToken": null,
+    "plaidItemId": null
+  },
+  {
+    "email": "rsjggr@gmail.com",
+    "fullName": "Heet Jani",
+    "dateOfBirth": "2007-04-24",
+    "walletAddress": "0x3Dc88401919665Ee05159985656A139ecEb072bn",
+    "isImmigrant": true,
+    "isStudent": true,
+    "createdAt": "2025-11-16T22:38:18.337Z",
+    "creditScore": null,
+    "ficoPoints": 0,
+    "vcs": [
+      {
+        "id": "vc:education:0x3Dc88401919665Ee05159985656A139ecEb072bn:1763332698337",
+        "type": "EducationDegree",
+        "issuerDid": "did:xrpl:EducationIssuer:001",
+        "subjectDid": "did:xrpl:user:0x3Dc88401",
+        "credentialSubject": {
+          "degreeType": "bachelors",
+          "institutionName": "JUB",
+          "graduationYear": "2029",
+          "verified": true
+        },
+        "issuanceDate": "2025-11-16T22:38:18.337Z",
+        "expirationDate": "2026-11-16T22:38:18.337Z"
+      }
+    ],
+    "plaidConnected": true,
+    "plaidAccessToken": "access-sandbox-e2227a1d-2845-48ee-9633-d7386799c20f",
+    "plaidItemId": "A8g6wD9EJWCEVpyXKrDgi8QVqoW5qEi1DqLvm",
+    "plaidConnectedAt": "2025-11-16T22:40:01.426Z"
+  }
+]

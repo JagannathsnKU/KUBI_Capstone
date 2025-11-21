@@ -1,0 +1,17 @@
+{
+  "name": "plaid-node-integration",
+  "version": "1.0.0",
+  "description": "Plaid API integration for fetching user financial data and saving as JSON for Python XAI engine.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "ethers": "^5.8.0",
+    "express": "^4.18.2",
+    "plaid": "^12.0.0",
+    "xrpl": "^3.0.0"
+  }
+}

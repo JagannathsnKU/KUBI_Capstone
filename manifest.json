@@ -1,0 +1,48 @@
+{
+  "name": "Eden - Worldwide Credit System",
+  "short_name": "Eden",
+  "description": "Your self-sovereign, gamified credit system that crosses borders",
+  "start_url": "/professional-mode.html",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#10b981",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["finance", "productivity", "utilities"],
+  "shortcuts": [
+    {
+      "name": "View Credit Score",
+      "short_name": "Score",
+      "description": "Quick access to your credit score",
+      "url": "/professional-mode.html",
+      "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+    },
+    {
+      "name": "Explorer Mode",
+      "short_name": "Explore",
+      "description": "3D credit visualization",
+      "url": "/index.html",
+      "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+    }
+  ]
+}
+

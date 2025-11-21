@@ -1,0 +1,49 @@
+{
+  "abandoned-factory-remodelled-gameready": {
+    "path": "models/abandoned-factory-remodelled-gameready/source/Untitled.glb",
+    "buildingType": "abandoned_factory",
+    "meta": {
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "rotationDegrees": true,
+      "preScale": 1,
+      "offset": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "environment": true
+    }
+  },
+  "gothic_cathedral_building": {
+    "path": "models/gothic_cathedral_building/scene.gltf",
+    "buildingType": "bank",
+    "meta": {
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "rotationDegrees": true,
+      "preScale": 1,
+      "offset": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    }
+  },
+  "assassins_creed_character": {
+    "path": "models/assassins_creed_character/scene.gltf",
+    "buildingType": "player",
+    "meta": {
+      "rotation": { "x": 0, "y": 0, "z": 0 },
+      "rotationDegrees": true,
+      "preScale": 1,
+      "offset": { "x": 0, "y": 0, "z": 0 }
+    }
+  }
+}

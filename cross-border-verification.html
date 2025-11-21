@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cross-Border Document Verification - XRPL</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Space Grotesk', 'Outfit', 'DM Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #111111;
+            --bg-card: #1a1a1a;
+            --bg-hover: #252525;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --accent-primary: #10b981;
+            --accent-secondary: #34d399;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --border: #2d2d2d;
+            --border-hover: #3d3d3d;
+            --gradient-primary: linear-gradient(135deg, #10b981 0%, #34d399 50%, #06b6d4 100%);
+        }
+
+        body {
+            background: var(--bg-primary);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 15% 30%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 85% 70%, rgba(168, 85, 247, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 50% 10%, rgba(6, 182, 212, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* MacBook-style Header */
+        .header-widget {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: rgba(26, 26, 26, 0.85);
+            backdrop-filter: blur(30px) saturate(200%);
+            -webkit-backdrop-filter: blur(30px) saturate(200%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px 20px 0 0;
+            border-bottom: 2px solid rgba(16, 185, 129, 0.3);
+            padding: 12px 32px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.5),
+                0 0 60px rgba(16, 185, 129, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            animation: slideInDown 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .header-widget button {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(10px);
+        }
+
+        .header-widget button:hover {
+            background: rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+        }
+
+        .header-widget h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #10b981 0%, #34d399 50%, #06b6d4 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+            flex: 1;
+            text-align: center;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            margin-top: 100px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #10b981 0%, #34d399 50%, #06b6d4 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 1.1em;
+        }
+
+        /* Glassmorphism Cards */
+        .glass-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(24px) saturate(200%);
+            -webkit-backdrop-filter: blur(24px) saturate(200%);
+            border: 1px solid var(--border);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.4),
+                0 2px 8px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            padding: 30px;
+            margin-bottom: 30px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 
+                0 12px 48px rgba(0, 0, 0, 0.5),
+                0 0 80px rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .glass-card h2 {
+            color: var(--accent-primary);
+            margin-bottom: 20px;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .flow-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .flow-step {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 20px;
+            border-radius: 16px;
+            border-left: 4px solid var(--accent-primary);
+            transition: all 0.3s ease;
+        }
+
+        .flow-step:hover {
+            transform: translateX(4px);
+            border-left-color: var(--accent-secondary);
+        }
+
+        .flow-step h3 {
+            color: var(--accent-secondary);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .flow-step p {
+            color: var(--text-muted);
+            font-size: 0.9em;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .action-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(24px) saturate(200%);
+            -webkit-backdrop-filter: blur(24px) saturate(200%);
+            border: 1px solid var(--border);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.4),
+                0 2px 8px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            padding: 30px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+            word-wrap: break-word;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .action-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 
+                0 12px 48px rgba(0, 0, 0, 0.5),
+                0 0 80px rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .action-card h2 {
+            color: var(--accent-primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px 24px;
+            background: var(--gradient-primary);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.5);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .result-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(24px) saturate(200%);
+            -webkit-backdrop-filter: blur(24px) saturate(200%);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 30px;
+            margin-top: 30px;
+            display: none;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.4),
+                0 2px 8px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            word-wrap: break-word;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .result-card.show {
+            display: block;
+            animation: slideInUp 0.4s ease;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-card.error {
+            border-color: rgba(239, 68, 68, 0.5);
+        }
+
+        .result-card h3 {
+            color: var(--accent-primary);
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .result-card.error h3 {
+            color: #ef4444;
+        }
+
+        .result-item {
+            margin-bottom: 12px;
+            padding: 12px 16px;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 12px;
+            border-left: 3px solid var(--accent-primary);
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-all;
+            max-width: 100%;
+            box-sizing: border-box;
+            line-height: 1.6;
+        }
+
+        .result-item strong {
+            color: var(--accent-secondary);
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        /* Style long IDs and hashes to be more readable */
+        .result-card {
+            overflow: hidden;
+            word-wrap: break-word;
+        }
+
+        .chain-visualization {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 16px;
+        }
+
+        .chain-link {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 12px;
+            border-left: 4px solid var(--accent-primary);
+            transition: all 0.3s ease;
+        }
+
+        .chain-link:hover {
+            transform: translateX(4px);
+            border-left-color: var(--accent-secondary);
+        }
+
+        .chain-link:last-child {
+            margin-bottom: 0;
+        }
+
+        .chain-arrow {
+            font-size: 1.5em;
+            color: var(--accent-primary);
+        }
+
+        .info-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: rgba(16, 185, 129, 0.15);
+            border-radius: 8px;
+            font-size: 0.85em;
+            color: var(--accent-secondary);
+            margin-top: 10px;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+
+        /* Info Box */
+        .info-box {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 16px;
+            border-left: 4px solid var(--accent-primary);
+        }
+
+        .info-box strong {
+            color: var(--accent-primary);
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .info-box p {
+            color: var(--text-muted);
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <!-- MacBook-style Header -->
+    <div class="header-widget">
+        <button onclick="window.location.href='professional-mode.html'">← Dashboard</button>
+        <h1>🌍 Cross-Border Verification</h1>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Cross-Border Document Verification</h1>
+        </div>
+
+        <!-- Quick Demo Fill Button -->
+        <div class="glass-card" style="text-align: center;">
+            <button onclick="fillAllDemoValues()" class="btn" style="max-width: 400px; margin: 0 auto; display: block; font-size: 1.1em; padding: 16px 32px;">
+                ✨ Fill All Demo Values
+            </button>
+            <p style="color: var(--text-muted); margin-top: 15px; font-size: 0.9em;">Click to auto-fill all forms with demo values for testing</p>
+        </div>
+
+        <!-- Action Cards -->
+        <div class="actions-grid">
+            <!-- Regulator: Issue Bank Legitimacy VC -->
+            <div class="action-card">
+                <h2>🏛️ Step 1: Regulator Issues Bank VC</h2>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">Regulator verifies bank is legitimate and issues VC on XRPL</p>
+                
+                <form id="bank-legitimacy-form">
+                    <div class="form-group">
+                        <label>Regulator DID</label>
+                        <input type="text" name="regulatorDid" value="did:xrpl:IndianRegulator:456" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Regulator XRPL Secret</label>
+                        <input type="password" name="regulatorSecret" placeholder="sYourRegulatorSecret" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Bank DID</label>
+                        <input type="text" name="bankDid" value="did:xrpl:BangaloreBank:123" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Bank Name</label>
+                        <input type="text" name="bankName" value="Bangalore Bank" required>
+                    </div>
+                    <div class="form-group">
+                        <label>License Number</label>
+                        <input type="text" name="licenseNumber" value="IN-BANK-2024-001">
+                    </div>
+                    <div class="form-group">
+                        <label>Jurisdiction (Country)</label>
+                        <input type="text" name="jurisdiction" value="India" required>
+                    </div>
+                    <button type="submit" class="btn">✅ Issue Bank Legitimacy VC on XRPL</button>
+                </form>
+                <div class="loading" id="bank-loading">⏳ Issuing VC on XRPL</div>
+                <div class="result-card" id="bank-result"></div>
+            </div>
+
+            <!-- Bank: Issue User Payment History VC -->
+            <div class="action-card">
+                <h2>🏦 Step 2: Bank Issues User VC</h2>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">Bank verifies user's payment history and issues VC (linked to Bank VC) on XRPL</p>
+                
+                <form id="user-payment-form">
+                    <div class="form-group">
+                        <label>Bank DID</label>
+                        <input type="text" name="bankDid" value="did:xrpl:BangaloreBank:123" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Bank XRPL Secret</label>
+                        <input type="password" name="bankSecret" placeholder="sYourBankSecret" required>
+                    </div>
+                    <div class="form-group">
+                        <label>User DID</label>
+                        <input type="text" name="userDid" value="did:xrpl:user:789" required>
+                    </div>
+                    <div class="form-group">
+                        <label>User Wallet Address</label>
+                        <input type="text" name="userAddress" placeholder="0x1234..." required>
+                    </div>
+                    <div class="form-group">
+                        <label>Bank Legitimacy VC ID</label>
+                        <input type="text" name="bankLegitimacyVCId" placeholder="vc:bank:..." required>
+                    </div>
+                    <div class="form-group">
+                        <label>Payment History (JSON) - Optional</label>
+                        <textarea name="paymentHistory" rows="4" placeholder='{"years": 5, "onTimeCount": 60, "totalCount": 60, "averageAmount": 1000, "country": "India"}'></textarea>
+                    </div>
+                    <button type="submit" class="btn">✅ Issue User Payment History VC on XRPL</button>
+                </form>
+                <div class="loading" id="user-loading">⏳ Issuing VC on XRPL</div>
+                <div class="result-card" id="user-result"></div>
+            </div>
+
+            <!-- Lender: Verify VC Chain -->
+            <div class="action-card">
+                <h2>🏦 Step 3: Lender Verifies Chain</h2>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">US Lender verifies the complete chain: Regulator → Bank → User</p>
+                
+                <form id="verify-chain-form">
+                    <div class="form-group">
+                        <label>User Payment History VC ID</label>
+                        <input type="text" name="userVCId" placeholder="vc:user:..." required>
+                    </div>
+                    <div class="form-group">
+                        <label>Trusted Regulators (JSON Array)</label>
+                        <textarea name="trustedRegulators" rows="3" placeholder='["did:xrpl:IndianRegulator:456"]' required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Verifier Address</label>
+                        <input type="text" name="verifierAddress" placeholder="US Lender Address" required>
+                    </div>
+                    <button type="submit" class="btn">🔍 Verify VC Chain on XRPL</button>
+                </form>
+                <div class="loading" id="verify-loading">⏳ Verifying chain on XRPL</div>
+                <div class="result-card" id="verify-result"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MetaMask XRPL Integration Script -->
+    <script type="module" src="metamask-xrpl-integration.js"></script>
+    
+    <script>
+        // Make functions globally accessible
+        window.fillAllDemoValues = function() {
+            document.querySelector('input[name="regulatorDid"]').value = 'did:xrpl:IndianRegulator:456';
+            document.querySelector('input[name="regulatorSecret"]').value = 'sEdVPxuCpfjB8caJpypbJNybdmsxk6b';
+            document.querySelector('input[name="bankDid"]').value = 'did:xrpl:BangaloreBank:123';
+            document.querySelector('input[name="bankName"]').value = 'Bangalore Bank';
+            document.querySelector('input[name="licenseNumber"]').value = 'IN-BANK-2024-001';
+            document.querySelector('input[name="jurisdiction"]').value = 'India';
+            
+            const step2BankDid = document.querySelectorAll('input[name="bankDid"]')[1];
+            if (step2BankDid) step2BankDid.value = 'did:xrpl:BangaloreBank:123';
+            document.querySelector('input[name="bankSecret"]').value = 'sEdVPxuCpfjB8caJpypbJNybdmsxk6b';
+            document.querySelector('input[name="userDid"]').value = 'did:xrpl:user:789';
+            document.querySelector('input[name="userAddress"]').value = '0x1234567890123456789012345678901234567890';
+            document.querySelector('textarea[name="paymentHistory"]').value = '{"years": 5, "onTimeCount": 60, "totalCount": 60, "averageAmount": 1000, "country": "India", "bankName": "Bangalore Bank"}';
+            
+            document.querySelector('textarea[name="trustedRegulators"]').value = '["did:xrpl:IndianRegulator:456"]';
+            document.querySelector('input[name="verifierAddress"]').value = 'US Lender Address';
+            
+            // Scroll to Step 1 form
+            document.querySelector('#bank-legitimacy-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        };
+
+        window.fillStep2FromStep1 = function(vcId, bankDid) {
+            document.querySelector('input[name="bankLegitimacyVCId"]').value = vcId;
+            const step2BankDid = document.querySelectorAll('input[name="bankDid"]')[1];
+            if (step2BankDid && bankDid) {
+                step2BankDid.value = bankDid;
+            }
+            document.querySelector('#user-payment-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            const vcIdField = document.querySelector('input[name="bankLegitimacyVCId"]');
+            vcIdField.style.background = 'rgba(16, 185, 129, 0.2)';
+            setTimeout(() => {
+                vcIdField.style.background = '';
+            }, 2000);
+        };
+
+        window.fillStep3FromStep2 = function(vcId) {
+            document.querySelector('input[name="userVCId"]').value = vcId;
+            document.querySelector('#verify-chain-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            const vcIdField = document.querySelector('input[name="userVCId"]');
+            vcIdField.style.background = 'rgba(16, 185, 129, 0.2)';
+            setTimeout(() => {
+                vcIdField.style.background = '';
+            }, 2000);
+        };
+
+        // DID Generator Functions
+        function generateDIDFromAddress() {
+            const address = document.getElementById('xrpl-address-input').value.trim();
+            const entityType = document.getElementById('entity-type-select').value;
+
+            if (!address) {
+                alert('Please enter an XRPL account address');
+                return;
+            }
+
+            if (!address.startsWith('r') || address.length < 25 || address.length > 35) {
+                alert('Invalid XRPL address format. Should start with "r" and be 25-35 characters.');
+                return;
+            }
+
+            const shortAddress = address.slice(0, 8) + '...' + address.slice(-4);
+            const did = `did:xrpl:${entityType}:${shortAddress.replace(/\./g, '')}`;
+
+            document.getElementById('did-output-address').textContent = did;
+            document.getElementById('did-result-address').style.display = 'block';
+        }
+
+        function generateCustomDID() {
+            const entityName = document.getElementById('entity-name-input').value.trim();
+            const uniqueId = document.getElementById('unique-id-input').value.trim();
+
+            if (!entityName) {
+                alert('Please enter an entity name');
+                return;
+            }
+
+            const id = uniqueId || Date.now().toString().slice(-6);
+            const did = `did:xrpl:${entityName}:${id}`;
+
+            document.getElementById('did-output-custom').textContent = did;
+            document.getElementById('did-result-custom').style.display = 'block';
+        }
+
+        function copyDID(elementId) {
+            const didText = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(didText).then(() => {
+                alert('DID copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+            });
+        }
+
+
+        window.importVCToAccount = function() {
+            // Get VC data from Step 3 result
+            const verifyResult = document.getElementById('verify-result');
+            if (!verifyResult || !verifyResult.classList.contains('show')) {
+                showImportModal('❌ Error', 'Please complete Step 3 (Lender Verifies Chain) first.');
+                return;
+            }
+
+            // Extract VC ID from the result - try multiple patterns
+            let userVCId = null;
+            
+            // Pattern 0: Check data attribute first (most reliable)
+            userVCId = verifyResult.getAttribute('data-user-vc-id');
+            
+            // Pattern 1: <strong>User VC ID:</strong> ${verification.userVCId}
+            if (!userVCId) {
+                const vcIdMatch1 = verifyResult.innerHTML.match(/User VC ID[^<]*>([^<]+)</);
+                if (vcIdMatch1) {
+                    userVCId = vcIdMatch1[1].trim();
+                }
+            }
+            
+            // Pattern 2: Look for VC ID in the result-item divs using textContent
+            if (!userVCId) {
+                const resultItems = verifyResult.querySelectorAll('.result-item');
+                resultItems.forEach(item => {
+                    const text = item.textContent || item.innerText;
+                    if (text.includes('User VC ID')) {
+                        // Try to extract after "User VC ID:" or "User VC ID"
+                        const match = text.match(/User VC ID[:\s]+([^\n\r<]+)/);
+                        if (match) {
+                            userVCId = match[1].trim();
+                        }
+                    }
+                });
+            }
+            
+            // Pattern 3: Look in the entire text content
+            if (!userVCId) {
+                const fullText = verifyResult.textContent || verifyResult.innerText;
+                const match = fullText.match(/User VC ID[:\s]+([^\n\r<]+)/);
+                if (match) {
+                    userVCId = match[1].trim();
+                }
+            }
+            
+            // Pattern 4: Look for any VC ID pattern (vc:user:... or vc:cross-border:...)
+            if (!userVCId) {
+                const vcIdPattern = /(vc:(?:user|cross-border|bank)[:\w-]+)/;
+                const match = verifyResult.innerHTML.match(vcIdPattern);
+                if (match) {
+                    userVCId = match[1].trim();
+                }
+            }
+            
+            if (!userVCId) {
+                console.error('Could not extract VC ID. Result HTML:', verifyResult.innerHTML);
+                showImportModal('❌ Error', 'Could not find VC ID in verification result. Please ensure Step 3 completed successfully.');
+                return;
+            }
+            
+            // Get Bank VC ID from Step 1 result (for chain of trust)
+            const bankResult = document.getElementById('bank-result');
+            let bankVCId = null;
+            let bankDid = null;
+            
+            if (bankResult && bankResult.classList.contains('show')) {
+                const bankVCIdMatch = bankResult.innerHTML.match(/VC ID[^<]*>([^<]+)</);
+                if (bankVCIdMatch) bankVCId = bankVCIdMatch[1].trim();
+                
+                const bankDidMatch = bankResult.innerHTML.match(/Bank DID[^<]*>([^<]+)</);
+                if (bankDidMatch) bankDid = bankDidMatch[1].trim();
+            }
+            
+            // Get User VC details from Step 2 result
+            const userResult = document.getElementById('user-result');
+            let txHash = null;
+            
+            if (userResult && userResult.classList.contains('show')) {
+                const txMatch = userResult.innerHTML.match(/Transaction Hash[^<]*>([^<]+)</);
+                if (txMatch) txHash = txMatch[1].trim();
+                
+                if (!bankDid) {
+                    const bankDidMatch = userResult.innerHTML.match(/Bank DID[^<]*>([^<]+)</);
+                    if (bankDidMatch) bankDid = bankDidMatch[1].trim();
+                }
+            }
+
+            // Get wallet VCs from localStorage
+            function getWalletVCs() {
+                return JSON.parse(localStorage.getItem('vc_wallet') || '[]');
+            }
+
+            function saveWalletVCs(vcs) {
+                localStorage.setItem('vc_wallet', JSON.stringify(vcs));
+            }
+
+            // Check if VC already exists
+            const vcs = getWalletVCs();
+            const existingVC = vcs.find(vc => vc.signature === userVCId || vc.vcId === userVCId);
+            
+            if (existingVC) {
+                showImportModal('⚠️ Already Imported', 'This VC has already been imported to your wallet.');
+                return;
+            }
+
+            // Try to get Bank VC ID from Step 2 result if not found in Step 1
+            if (!bankVCId && userResult && userResult.classList.contains('show')) {
+                const bankVCIdMatch2 = userResult.innerHTML.match(/Bank VC ID[^<]*>([^<]+)</);
+                if (bankVCIdMatch2) bankVCId = bankVCIdMatch2[1].trim();
+            }
+            
+            // If still no Bank VC ID, try to extract from chain info in Step 3
+            if (!bankVCId && verifyResult) {
+                const chainText = verifyResult.textContent || verifyResult.innerText;
+                // Look for Bank VC ID pattern in the chain visualization
+                const bankVCPattern = /(vc:(?:bank|cross-border)[:\w-]+)/i;
+                const bankMatch = chainText.match(bankVCPattern);
+                if (bankMatch) bankVCId = bankMatch[1].trim();
+            }
+            
+            // Create chained VC object in wallet format
+            // chainOfTrust should be the Bank VC ID (signature) to link to parent VC
+            // If Bank VC ID not found, use a placeholder to ensure Verify Chain button shows
+            const importedVC = {
+                type: 'User Payment History',
+                issuer: bankDid || 'did:xrpl:BangaloreBank:123',
+                subject: userVCId.split(':')[2] || 'User',
+                fact: 'Cross-border payment history verified',
+                signature: userVCId,
+                vcId: userVCId,
+                status: 'good',
+                creditScore: 5, // Award credit score points for cross-border verification (1-100 scale)
+                chainOfTrust: bankVCId || 'did:xrpl:BangaloreBank:123', // Link to Bank VC (parent in chain) - use placeholder if not found
+                verified: false, // Set to false so Verify Chain button appears
+                verificationChain: [],
+                xrplTxHash: txHash,
+                importedAt: new Date().toISOString()
+            };
+
+            // Add to wallet
+            vcs.push(importedVC);
+            saveWalletVCs(vcs);
+
+            // Show confirmation modal
+            showImportModal(
+                '✅ VC Imported Successfully!',
+                `User Payment History VC has been added to your wallet.\n\n` +
+                `• VC ID: ${userVCId.slice(0, 30)}...\n` +
+                `• Credit Score: +5 points\n` +
+                `• Chain of Trust: ${bankVCId ? 'Linked to Bank VC' : 'Not linked'}\n` +
+                `• Status: Ready to verify chain`,
+                true
+            );
+
+            // Update the import button to show success
+            const importButton = document.querySelector('button[onclick="importVCToAccount()"]');
+            if (importButton) {
+                importButton.textContent = '✅ VC Imported';
+                importButton.disabled = true;
+                importButton.style.background = 'rgba(16, 185, 129, 0.2)';
+                importButton.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+                importButton.style.opacity = '0.9';
+            }
+        }
+
+        // Show import confirmation modal
+        function showImportModal(title, message, isSuccess = false) {
+            // Remove existing modal if any
+            const existingModal = document.getElementById('import-confirmation-modal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+
+            // Create modal
+            const modal = document.createElement('div');
+            modal.id = 'import-confirmation-modal';
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+                backdrop-filter: blur(10px);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                animation: fadeIn 0.3s ease;
+            `;
+
+            const modalContent = document.createElement('div');
+            modalContent.style.cssText = `
+                background: var(--bg-card);
+                backdrop-filter: blur(24px) saturate(200%);
+                border: 1px solid var(--border);
+                border-radius: 24px;
+                padding: 40px;
+                max-width: 500px;
+                width: 90%;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+                animation: slideUp 0.3s ease;
+            `;
+
+            const titleColor = isSuccess ? 'var(--accent-primary)' : '#ef4444';
+            modalContent.innerHTML = `
+                <div style="text-align: center; margin-bottom: 24px;">
+                    <div style="font-size: 3em; margin-bottom: 16px;">${isSuccess ? '✅' : '⚠️'}</div>
+                    <h2 style="color: ${titleColor}; font-size: 1.5rem; font-weight: 700; margin-bottom: 16px;">${title}</h2>
+                    <p style="color: var(--text-secondary); font-size: 1rem; line-height: 1.6; white-space: pre-line;">${message}</p>
+                </div>
+                <div style="display: flex; gap: 12px; justify-content: center;">
+                    <button id="modal-view-wallet-btn" style="
+                        padding: 12px 24px;
+                        background: var(--gradient-primary);
+                        color: #fff;
+                        border: none;
+                        border-radius: 12px;
+                        font-weight: 700;
+                        cursor: pointer;
+                        font-size: 0.875rem;
+                        transition: all 0.3s ease;
+                    ">View in Wallet</button>
+                    <button id="modal-close-btn" style="
+                        padding: 12px 24px;
+                        background: rgba(255, 255, 255, 0.05);
+                        color: var(--text-secondary);
+                        border: 1px solid var(--border);
+                        border-radius: 12px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        font-size: 0.875rem;
+                        transition: all 0.3s ease;
+                    ">Close</button>
+                </div>
+            `;
+
+            modal.appendChild(modalContent);
+            document.body.appendChild(modal);
+
+            // Add animations
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeIn {
+                    from { opacity: 0; }
+                    to { opacity: 1; }
+                }
+                @keyframes slideUp {
+                    from { transform: translateY(20px); opacity: 0; }
+                    to { transform: translateY(0); opacity: 1; }
+                }
+                #modal-view-wallet-btn:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+                }
+                #modal-close-btn:hover {
+                    background: rgba(255, 255, 255, 0.1);
+                    border-color: var(--border-hover);
+                }
+            `;
+            document.head.appendChild(style);
+
+            // Close modal handlers
+            document.getElementById('modal-close-btn').onclick = () => {
+                modal.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => modal.remove(), 300);
+            };
+
+            document.getElementById('modal-view-wallet-btn').onclick = () => {
+                window.location.href = 'wallet.html';
+            };
+
+            // Close on background click
+            modal.onclick = (e) => {
+                if (e.target === modal) {
+                    document.getElementById('modal-close-btn').click();
+                }
+            };
+
+            // Auto-close after 5 seconds if success
+            if (isSuccess) {
+                setTimeout(() => {
+                    if (document.getElementById('import-confirmation-modal')) {
+                        document.getElementById('modal-close-btn').click();
+                    }
+                }, 5000);
+            }
+        }
+
+        // MetaMask XRPL Integration for Cross-Border VCs
+        
+        /**
+         * Issue Bank Legitimacy VC using MetaMask XRPL Snap
+         */
+        async function issueBankLegitimacyVCWithMetaMask(data) {
+            try {
+                // Check if MetaMask is installed
+                if (typeof window.metamaskXRPL === 'undefined' || !window.metamaskXRPL.isMetaMaskInstalled()) {
+                    throw new Error('MetaMask not installed');
+                }
+
+                // Create VC data structure
+                const vcData = {
+                    id: `vc:bank:${data.bankDid}:${Date.now()}`,
+                    type: 'BankLegitimacyCredential',
+                    issuerDid: data.regulatorDid,
+                    subjectDid: data.bankDid,
+                    credentialSubject: {
+                        bankDid: data.bankDid,
+                        bankName: data.bankName,
+                        licenseNumber: data.licenseNumber || '',
+                        jurisdiction: data.jurisdiction,
+                        verified: true,
+                        verifiedBy: data.regulatorDid
+                    },
+                    issuanceDate: new Date().toISOString(),
+                    expirationDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString() // 1 year
+                };
+
+                const result = await window.metamaskXRPL.issueVCOnXRPL(vcData);
+                console.log('✅ Bank Legitimacy VC issued on XRPL via MetaMask:', result.txHash);
+                return {
+                    success: true,
+                    vcId: result.vcId,
+                    txHash: result.txHash,
+                    bankDid: data.bankDid,
+                    regulatorDid: data.regulatorDid,
+                    xrplExplorer: result.xrplExplorer
+                };
+            } catch (error) {
+                console.error('❌ Failed to issue Bank VC via MetaMask XRPL Snap:', error);
+                throw error;
+            }
+        }
+
+        /**
+         * Issue User Payment History VC using MetaMask XRPL Snap
+         */
+        async function issueUserPaymentHistoryVCWithMetaMask(data) {
+            try {
+                // Check if MetaMask is installed
+                if (typeof window.metamaskXRPL === 'undefined' || !window.metamaskXRPL.isMetaMaskInstalled()) {
+                    throw new Error('MetaMask not installed');
+                }
+
+                // Parse payment history if provided
+                let paymentHistory = null;
+                if (data.paymentHistory) {
+                    try {
+                        paymentHistory = typeof data.paymentHistory === 'string' 
+                            ? JSON.parse(data.paymentHistory) 
+                            : data.paymentHistory;
+                    } catch (e) {
+                        paymentHistory = null;
+                    }
+                }
+
+                // Create VC data structure
+                const vcData = {
+                    id: `vc:user:${data.userDid}:${Date.now()}`,
+                    type: 'UserPaymentHistoryCredential',
+                    issuerDid: data.bankDid,
+                    subjectDid: data.userDid,
+                    credentialSubject: {
+                        userDid: data.userDid,
+                        userAddress: data.userAddress,
+                        bankDid: data.bankDid,
+                        bankLegitimacyVCId: data.bankLegitimacyVCId,
+                        paymentHistory: paymentHistory || {
+                            years: 0,
+                            onTimeCount: 0,
+                            totalCount: 0,
+                            averageAmount: 0,
+                            country: 'Unknown'
+                        },
+                        verified: true,
+                        verifiedBy: data.bankDid
+                    },
+                    issuanceDate: new Date().toISOString(),
+                    expirationDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString() // 1 year
+                };
+
+                const result = await window.metamaskXRPL.issueVCOnXRPL(vcData);
+                console.log('✅ User Payment History VC issued on XRPL via MetaMask:', result.txHash);
+                return {
+                    success: true,
+                    vcId: result.vcId,
+                    txHash: result.txHash,
+                    userDid: data.userDid,
+                    bankDid: data.bankDid,
+                    chainOfTrust: `Regulator → Bank (${data.bankLegitimacyVCId}) → User (${result.vcId})`,
+                    xrplExplorer: result.xrplExplorer
+                };
+            } catch (error) {
+                console.error('❌ Failed to issue User VC via MetaMask XRPL Snap:', error);
+                throw error;
+            }
+        }
+
+        // Step 1: Issue Bank Legitimacy VC
+        document.getElementById('bank-legitimacy-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+
+            const loading = document.getElementById('bank-loading');
+            const result = document.getElementById('bank-result');
+            
+            loading.classList.add('show');
+            result.classList.remove('show');
+
+            let resultData = null;
+
+             // Try MetaMask XRPL Snap first (only once, no retries)
+             try {
+                 console.log('🔷 Attempting to issue Bank VC via MetaMask XRPL Snap...');
+                 resultData = await issueBankLegitimacyVCWithMetaMask(data);
+             } catch (error) {
+                 // Check if this is an autofill error (common with XRPL Snap)
+                 const isAutofillError = error.message?.includes('autofill') || 
+                                       error.code === -32603 ||
+                                       error.message?.includes('Failed to autofill');
+                 
+                 if (isAutofillError) {
+                     console.warn('⚠️ MetaMask XRPL Snap autofill failed. This usually means:');
+                     console.warn('   1. XRPL account needs to be activated with XRP');
+                     console.warn('   2. Network connectivity issue');
+                     console.warn('   3. Falling back to backend API...');
+                 } else {
+                     console.warn('⚠️ MetaMask XRPL Snap failed, trying backend...', error.message);
+                 }
+                 
+                 // Fallback to backend API
+                 try {
+                     console.log('🔄 Calling backend API for Bank VC issuance...');
+                     const response = await fetch('http://localhost:3003/cross-border/issue-bank-legitimacy', {
+                         method: 'POST',
+                         headers: { 'Content-Type': 'application/json' },
+                         body: JSON.stringify(data)
+                     });
+
+                     if (!response.ok) {
+                         throw new Error(`Backend API error: ${response.status} ${response.statusText}`);
+                     }
+
+                     resultData = await response.json();
+                     
+                     if (isAutofillError) {
+                         console.log('✅ Backend API fallback successful');
+                     }
+                 } catch (backendError) {
+                     loading.classList.remove('show');
+                     result.classList.add('show', 'error');
+                     
+                     let errorMessage = backendError.message;
+                     if (isAutofillError) {
+                         errorMessage = `MetaMask XRPL Snap failed (autofill error). Backend API also failed: ${backendError.message}. ` +
+                                      `Please ensure your XRPL account is activated with XRP or check your backend server.`;
+                     }
+                     
+                     result.innerHTML = `
+                         <h3>❌ Error</h3>
+                         <div class="result-item">
+                             <strong>Error:</strong> ${errorMessage}
+                         </div>
+                         ${isAutofillError ? `
+                         <div class="result-item" style="background: rgba(251, 191, 36, 0.1); border-left-color: #fbbf24;">
+                             <strong>💡 Tip:</strong> If using MetaMask XRPL Snap, ensure your XRPL account is activated with XRP. 
+                             You can activate it by sending XRP to your XRPL address from a faucet (testnet) or another account.
+                         </div>
+                         ` : ''}
+                     `;
+                     return;
+                 }
+             }
+
+            loading.classList.remove('show');
+            result.classList.add('show');
+
+            if (resultData && resultData.success) {
+                result.className = 'result-card show';
+                result.innerHTML = `
+                    <h3>✅ Bank Legitimacy VC Issued!</h3>
+                    <div class="result-item">
+                        <strong>VC ID:</strong> ${resultData.vcId}
+                    </div>
+                    <div class="result-item">
+                        <strong>Transaction Hash:</strong> ${resultData.txHash}
+                    </div>
+                    <div class="result-item">
+                        <strong>Bank DID:</strong> ${resultData.bankDid}
+                    </div>
+                    <div class="result-item">
+                        <strong>Regulator DID:</strong> ${resultData.regulatorDid}
+                    </div>
+                    ${resultData.xrplExplorer ? `
+                    <div class="result-item">
+                        <strong>XRPL Explorer:</strong> 
+                        <a href="${resultData.xrplExplorer}" target="_blank" style="color: #34d399;">View Transaction</a>
+                    </div>
+                    ` : ''}
+                    <div class="info-box" style="margin-top: 15px;">
+                        <strong>📋 Next Step:</strong> Use this VC ID in Step 2 (Bank Issues User VC)
+                        <button onclick="fillStep2FromStep1('${resultData.vcId}', '${resultData.bankDid}')" 
+                                style="margin-top: 10px; padding: 8px 16px; background: var(--gradient-primary); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                            ✨ Auto-Fill Step 2
+                        </button>
+                    </div>
+                `;
+            } else {
+                result.className = 'result-card show error';
+                result.innerHTML = `
+                    <h3>❌ Error</h3>
+                    <div class="result-item">${resultData?.error || 'Unknown error'}</div>
+                `;
+            }
+        });
+
+        // Step 2: Issue User Payment History VC
+        document.getElementById('user-payment-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+
+            if (data.paymentHistory) {
+                try {
+                    data.paymentHistory = JSON.parse(data.paymentHistory);
+                } catch (e) {
+                    data.paymentHistory = null;
+                }
+            }
+
+            const loading = document.getElementById('user-loading');
+            const result = document.getElementById('user-result');
+            
+            loading.classList.add('show');
+            result.classList.remove('show');
+
+            let resultData = null;
+
+             // Try MetaMask XRPL Snap first (only once, no retries)
+             try {
+                 console.log('🔷 Attempting to issue User VC via MetaMask XRPL Snap...');
+                 resultData = await issueUserPaymentHistoryVCWithMetaMask(data);
+             } catch (error) {
+                 // Check if this is an autofill error (common with XRPL Snap)
+                 const isAutofillError = error.message?.includes('autofill') || 
+                                       error.code === -32603 ||
+                                       error.message?.includes('Failed to autofill');
+                 
+                 if (isAutofillError) {
+                     console.warn('⚠️ MetaMask XRPL Snap autofill failed. This usually means:');
+                     console.warn('   1. XRPL account needs to be activated with XRP');
+                     console.warn('   2. Network connectivity issue');
+                     console.warn('   3. Falling back to backend API...');
+                 } else {
+                     console.warn('⚠️ MetaMask XRPL Snap failed, trying backend...', error.message);
+                 }
+                 
+                 // Fallback to backend API
+                 try {
+                     console.log('🔄 Calling backend API for User VC issuance...');
+                     const response = await fetch('http://localhost:3003/cross-border/issue-user-payment-history', {
+                         method: 'POST',
+                         headers: { 'Content-Type': 'application/json' },
+                         body: JSON.stringify(data)
+                     });
+
+                     if (!response.ok) {
+                         throw new Error(`Backend API error: ${response.status} ${response.statusText}`);
+                     }
+
+                     resultData = await response.json();
+                     
+                     if (isAutofillError) {
+                         console.log('✅ Backend API fallback successful');
+                     }
+                 } catch (backendError) {
+                     loading.classList.remove('show');
+                     result.classList.add('show', 'error');
+                     
+                     let errorMessage = backendError.message;
+                     if (isAutofillError) {
+                         errorMessage = `MetaMask XRPL Snap failed (autofill error). Backend API also failed: ${backendError.message}. ` +
+                                      `Please ensure your XRPL account is activated with XRP or check your backend server.`;
+                     }
+                     
+                     result.innerHTML = `
+                         <h3>❌ Error</h3>
+                         <div class="result-item">
+                             <strong>Error:</strong> ${errorMessage}
+                         </div>
+                         ${isAutofillError ? `
+                         <div class="result-item" style="background: rgba(251, 191, 36, 0.1); border-left-color: #fbbf24;">
+                             <strong>💡 Tip:</strong> If using MetaMask XRPL Snap, ensure your XRPL account is activated with XRP. 
+                             You can activate it by sending XRP to your XRPL address from a faucet (testnet) or another account.
+                         </div>
+                         ` : ''}
+                     `;
+                     return;
+                 }
+             }
+
+            loading.classList.remove('show');
+            result.classList.add('show');
+
+            if (resultData && resultData.success) {
+                result.className = 'result-card show';
+                result.innerHTML = `
+                    <h3>✅ User Payment History VC Issued!</h3>
+                    <div class="result-item">
+                        <strong>VC ID:</strong> ${resultData.vcId}
+                    </div>
+                    <div class="result-item">
+                        <strong>Transaction Hash:</strong> ${resultData.txHash}
+                    </div>
+                    <div class="result-item">
+                        <strong>User DID:</strong> ${resultData.userDid}
+                    </div>
+                    <div class="result-item">
+                        <strong>Bank DID:</strong> ${resultData.bankDid}
+                    </div>
+                    <div class="result-item">
+                        <strong>Chain of Trust:</strong> ${resultData.chainOfTrust}
+                    </div>
+                    ${resultData.xrplExplorer ? `
+                    <div class="result-item">
+                        <strong>XRPL Explorer:</strong> 
+                        <a href="${resultData.xrplExplorer}" target="_blank" style="color: #34d399;">View Transaction</a>
+                    </div>
+                    ` : ''}
+                    <div class="info-box" style="margin-top: 15px;">
+                        <strong>📋 Next Step:</strong> Use this VC ID in Step 3 (Lender Verifies Chain)
+                        <button onclick="fillStep3FromStep2('${resultData.vcId}')" 
+                                style="margin-top: 10px; padding: 8px 16px; background: var(--gradient-primary); color: #fff; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                            ✨ Auto-Fill Step 3
+                        </button>
+                    </div>
+                `;
+            } else {
+                result.className = 'result-card show error';
+                result.innerHTML = `
+                    <h3>❌ Error</h3>
+                    <div class="result-item">${resultData?.error || 'Unknown error'}</div>
+                `;
+            }
+        });
+
+        // Step 3: Verify VC Chain
+        document.getElementById('verify-chain-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+
+            try {
+                data.trustedRegulators = JSON.parse(data.trustedRegulators);
+            } catch (e) {
+                data.trustedRegulators = [data.trustedRegulators];
+            }
+
+            const loading = document.getElementById('verify-loading');
+            const result = document.getElementById('verify-result');
+            
+            loading.classList.add('show');
+            result.classList.remove('show');
+
+            try {
+                const response = await fetch('http://localhost:3003/cross-border/verify-chain', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const resultData = await response.json();
+                loading.classList.remove('show');
+                result.classList.add('show');
+
+                if (resultData.verification) {
+                    const verification = resultData.verification;
+                    result.className = `result-card show ${verification.valid ? '' : 'error'}`;
+                    
+                    // Store VC ID in data attribute for easy access
+                    if (verification.userVCId) {
+                        result.setAttribute('data-user-vc-id', verification.userVCId);
+                    }
+                    
+                    let chainHTML = '';
+                    if (verification.chain && verification.chain.length > 0) {
+                        chainHTML = '<div class="chain-visualization"><h4 style="margin-bottom: 15px; color: #34d399;">Chain of Trust:</h4>';
+                        verification.chain.forEach((vc, index) => {
+                            chainHTML += `
+                                <div class="chain-link">
+                                    <div style="flex: 1;">
+                                        <strong>${vc.type}</strong><br>
+                                        <span style="color: var(--text-muted); font-size: 0.9em;">Issuer: ${vc.issuer}</span>
+                                    </div>
+                                    ${index < verification.chain.length - 1 ? '<span class="chain-arrow">↓</span>' : ''}
+                                </div>
+                            `;
+                        });
+                        chainHTML += '</div>';
+                    }
+
+                    result.innerHTML = `
+                        <h3>${verification.valid ? '✅ VC Chain Verified!' : '❌ VC Chain Verification Failed'}</h3>
+                        <div class="result-item">
+                            <strong>Status:</strong> ${verification.valid ? 'VALID - Cross-border credit approved!' : 'INVALID - Credit not approved'}
+                        </div>
+                        <div class="result-item">
+                            <strong>User VC ID:</strong> ${verification.userVCId}
+                        </div>
+                        <div class="result-item">
+                            <strong>Root Issuer:</strong> ${verification.rootIssuer}
+                        </div>
+                        <div class="result-item">
+                            <strong>Trusted:</strong> ${verification.isTrusted ? '✅ Yes' : '❌ No'}
+                        </div>
+                        <div class="result-item">
+                            <strong>Chain Integrity:</strong> ${verification.chainIntegrity ? '✅ Valid' : '❌ Invalid'}
+                        </div>
+                        <div class="result-item">
+                            <strong>Verified By:</strong> ${verification.verifiedBy}
+                        </div>
+                        <div class="result-item">
+                            <strong>Verified At:</strong> ${verification.verifiedAt}
+                        </div>
+                        ${verification.reason ? `<div class="result-item" style="color: #ef4444;"><strong>Reason:</strong> ${verification.reason}</div>` : ''}
+                        ${chainHTML}
+                        ${verification.valid ? `
+                        <div class="info-box" style="margin-top: 20px;">
+                            <strong>💡 Import VC to Your Account:</strong>
+                            <p style="margin-top: 8px; margin-bottom: 12px;">
+                                After completing the verification flow, you can import your VCs to your account to earn credit score points (1-100 scale) based on your payment history, rent payments, and other credentials.
+                            </p>
+                            <button onclick="importVCToAccount()" class="btn" style="max-width: 300px;">
+                                📥 Import VC to My Account
+                            </button>
+                        </div>
+                        ` : ''}
+                    `;
+                } else {
+                    result.className = 'result-card show error';
+                    result.innerHTML = `
+                        <h3>❌ Error</h3>
+                        <div class="result-item">${resultData.error || 'Unknown error'}</div>
+                    `;
+                }
+            } catch (error) {
+                loading.classList.remove('show');
+                result.classList.add('show', 'error');
+                result.innerHTML = `
+                    <h3>❌ Error</h3>
+                    <div class="result-item">${error.message}</div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

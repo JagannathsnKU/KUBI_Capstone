@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eden </title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#10b981">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="professional-mode.css">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="fixed inset-0 gradient-bg -z-10"></div>
+    
+    <!-- Floating Orbs - Normal Mode -->
+    <div class="fixed inset-0 -z-10 pointer-events-none">
+        <div class="absolute top-10 left-10 w-96 h-96 bg-emerald-500 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-blob"></div>
+        <div class="absolute top-60 right-20 w-[500px] h-[500px] bg-purple-500 rounded-full mix-blend-screen filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div class="absolute bottom-10 left-1/3 w-[450px] h-[450px] bg-cyan-500 rounded-full mix-blend-screen filter blur-3xl opacity-15 animate-blob animation-delay-4000"></div>
+        <div class="absolute top-1/2 right-1/4 w-80 h-80 bg-pink-500 rounded-full mix-blend-screen filter blur-3xl opacity-15 animate-blob animation-delay-6000"></div>
+    </div>
+    
+    <!-- Animated Grid Pattern -->
+    <div class="fixed inset-0 -z-10 pointer-events-none opacity-20">
+        <div style="background-image: linear-gradient(rgba(16, 185, 129, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(16, 185, 129, 0.1) 1px, transparent 1px); background-size: 50px 50px;"></div>
+    </div>
+    
+    <div class="professional-container" style="margin-top: 0; padding-top: 0;">
+        <!-- Modern Minimalist Floating Header -->
+        <header class="modern-header">
+            <div class="modern-header-container">
+                <!-- Left: Logo & Title -->
+                <div class="modern-header-left" onclick="window.location.reload()">
+                    <div class="modern-header-logo">
+                        📊
+                    </div>
+                    <div class="modern-header-brand">
+                        <h1 class="modern-header-title">Eden</h1>
+
+                    </div>
+                </div>
+                
+                <!-- Right: Navigation -->
+                <nav class="modern-header-nav">
+                    <button onclick="switchToExplorerMode()" class="modern-nav-btn">
+                        <span class="modern-nav-icon">🌌</span>
+                        <span class="modern-nav-text">Explorer</span>
+                    </button>
+                    <button onclick="window.location.href='signup.html'" class="modern-nav-btn modern-nav-btn-primary">
+                        <span class="modern-nav-icon">✨</span>
+                        <span class="modern-nav-text">Signed In</span>
+                    </button>
+                </nav>
+            </div>
+        </header>
+        
+        <!-- Main Dashboard -->
+        <main class="max-w-7xl mx-auto px-6 py-6" style="margin-top: 80px;">
+            <!-- Score Overview - Modern Cards -->
+            <section class="mb-12">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Main Score Card -->
+                    <div class="score-card-modern lg:col-span-2 hover-scale">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <p class="text-sm text-[#cbd5e1] mb-2">Worldwide Credit Score</p>
+                                <h2 class="text-7xl font-black bg-gradient-to-r from-emerald-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent drop-shadow-2xl" id="main-score" style="text-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);">68</h2>
+                                <div class="flex items-center gap-2 mt-3">
+                                    <span class="text-emerald-400 text-base font-bold bg-emerald-500/20 px-3 py-1 rounded-full border border-emerald-500/30">↑ +3</span>
+                                    <span class="text-cyan-400 text-sm font-semibold">this month</span>
+                                </div>
+                            </div>
+                            <canvas id="score-radial-meter" width="140" height="140" class="float-animation"></canvas>
+                        </div>
+                        <div class="flex items-center gap-2 text-sm text-emerald-400 font-bold">
+                            <span class="w-3 h-3 rounded-full bg-gradient-to-r from-emerald-500 via-cyan-500 to-purple-500 animate-pulse shadow-xl shadow-[0_0_8px_rgba(16,185,129,0.5)] ring-2 ring-emerald-500/50"></span>
+                            <span class="font-mono font-black tracking-wider uppercase">Powered by XAI</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Quests Card -->
+                    <div class="score-card-modern hover-scale">
+                        <div class="text-center">
+                            <div class="text-4xl mb-2">🎮</div>
+                            <p class="text-sm text-[#cbd5e1] mb-1">Quests Completed</p>
+                            <h3 class="text-3xl font-bold text-[#f8fafc] mb-1" id="quests-completed">12</h3>
+                            <p class="text-xs text-[#94a3b8]">NFTs Earned</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Wallet Card -->
+                    <div class="score-card-modern hover-scale">
+                        <div class="text-center">
+                            <div class="text-4xl mb-2">💰</div>
+                            <p class="text-sm text-[#cbd5e1] mb-1">Wallet Balance</p>
+                            <h3 class="text-3xl font-bold text-[#f8fafc] mb-1" id="wallet-balance">$4,200</h3>
+                            <p class="text-xs text-[#94a3b8]">Total Assets</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Quick Stats  -->
+            <section class="mb-12">
+                <h2 class="section-title-modern mb-2">📊 Quick Stats</h2>
+                <p class="text-[#cbd5e1] mb-6">Real-time overview of your financial health</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="stat-widget-modern hover-scale">
+                        <div class="flex items-center gap-4">
+                            <div class="w-20 h-20 rounded-3xl bg-gradient-to-br from-emerald-500 via-cyan-500 to-purple-500 flex items-center justify-center text-3xl font-bold text-white shadow-2xl ring-4 ring-emerald-500/30" style="clip-path: polygon(20% 0%, 100% 0%, 100% 80%, 80% 100%, 0% 100%, 0% 20%);">
+                                ✓
+                            </div>
+                            <div>
+                                <div class="text-4xl font-black text-[#f8fafc] mb-2" data-target="98" style="text-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);">1 </div>
+                                <div class="text-sm font-bold text-[#cbd5e1] mb-2 uppercase tracking-wide">Payment Success</div>
+                                <div class="text-sm text-emerald-400 font-black bg-emerald-500/20 px-2 py-1 rounded-lg inline-block border border-emerald-500/30">↑ 2.5%</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-widget-modern hover-scale">
+                        <div class="flex items-center gap-4">
+                            <div class="w-20 h-20 rounded-3xl bg-gradient-to-br from-purple-500 via-pink-500 to-cyan-500 flex items-center justify-center text-3xl font-bold text-white shadow-2xl shadow-[0_0_15px_rgba(168,85,247,0.4)] ring-4 ring-purple-500/30" style="clip-path: polygon(0% 0%, 80% 0%, 100% 20%, 100% 100%, 20% 100%, 0% 80%);">
+                                📈
+                            </div>
+                            <div>
+                                <div class="text-4xl font-black text-[#f8fafc] mb-2" data-target="127" style="text-shadow: 0 2px 8px rgba(168, 85, 247, 0.4);">2</div>
+                                <div class="text-sm font-bold text-[#cbd5e1] mb-2 uppercase tracking-wide">Score Gain</div>
+                                <div class="text-sm text-purple-400 font-black bg-purple-500/20 px-2 py-1 rounded-lg inline-block border border-purple-500/30">+5 pts YTD</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-widget-modern hover-scale">
+                        <div class="flex items-center gap-4">
+                            <div class="w-20 h-20 rounded-3xl bg-gradient-to-br from-orange-500 via-pink-500 to-purple-500 flex items-center justify-center text-3xl font-bold text-white shadow-2xl ring-4 ring-orange-500/30" style="clip-path: polygon(0% 20%, 20% 0%, 100% 0%, 100% 80%, 80% 100%, 0% 100%);">
+                                ⏱️
+                            </div>
+                            <div>
+                                <div class="text-4xl font-black text-[#f8fafc] mb-2" data-target="15" style="text-shadow: 0 2px 8px rgba(249, 115, 22, 0.4);">3</div>
+                                <div class="text-sm font-bold text-[#cbd5e1] mb-2 uppercase tracking-wide">Days to Milestone</div>
+                                <div class="text-sm text-cyan-400 font-black bg-cyan-500/20 px-2 py-1 rounded-lg inline-block border border-cyan-500/30">On Track</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-widget-modern hover-scale">
+                        <div class="flex items-center gap-4">
+                            <div class="w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-500 via-blue-500 to-purple-500 flex items-center justify-center text-3xl font-bold text-white shadow-2xl ring-4 ring-cyan-500/30" style="clip-path: polygon(20% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 20%);">
+                                💎
+                            </div>
+                            <div>
+                                <div class="text-4xl font-black text-[#f8fafc] mb-2" data-target="85" style="text-shadow: 0 2px 8px rgba(6, 182, 212, 0.4);">80%</div>
+                                <div class="text-sm font-bold text-[#cbd5e1] mb-2 uppercase tracking-wide">Reliability</div>
+                                <div class="text-sm text-purple-400 font-black bg-purple-500/20 px-2 py-1 rounded-lg inline-block border border-purple-500/30">Excellent</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- XAI Analysis  -->
+            <section class="mb-12">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h2 class="section-title-modern mb-2">🧠 Explainable AI Analysis</h2>
+                        <p class="text-[#cbd5e1]">Understanding your score: What impacts it and why</p>
+                    </div>
+                    <div class="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 rounded-xl border border-emerald-500/30">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span class="text-emerald-400 text-sm font-bold">AI Powered</span>
+                    </div>
+                </div>
+                
+                <div id="xai-factors" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Payment History - Enhanced -->
+                    <div class="factor-card-modern">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center gap-4">
+                                <div class="factor-icon-container bg-gradient-to-br from-emerald-500 to-cyan-500">
+                                    <span class="text-2xl relative z-10">✅</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-lg text-[#f8fafc] mb-1">Payment History</h3>
+                                    <p class="text-xs text-[#94a3b8] uppercase tracking-wider">Credit Factor</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-2xl font-black text-emerald-400 mb-1">+35</div>
+                                <div class="text-xs text-[#94a3b8] font-semibold">points</div>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm text-[#cbd5e1] font-semibold">Score Impact</span>
+                                <span class="text-sm text-emerald-400 font-bold">92%</span>
+                            </div>
+                            <div class="factor-progress-bar">
+                                <div class="factor-progress-fill bg-gradient-to-r from-emerald-500 via-cyan-500 to-purple-500" style="width: 92%;"></div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 p-3 bg-emerald-500/10 rounded-xl border border-emerald-500/20">
+                            <span class="text-emerald-400">💡</span>
+                            <p class="text-sm text-[#cbd5e1] flex-1">
+                                <strong class="text-emerald-400">Excellent!</strong> You have 0 missed payments in the last 12 months. Keep it up!
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Credit Utilization - Enhanced -->
+                    <div class="factor-card-modern">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center gap-4">
+                                <div class="factor-icon-container bg-gradient-to-br from-orange-500 to-red-500">
+                                    <span class="text-2xl relative z-10">⚠️</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-lg text-[#f8fafc] mb-1">Credit Utilization</h3>
+                                    <p class="text-xs text-[#94a3b8] uppercase tracking-wider">Credit Factor</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-2xl font-black text-red-400 mb-1">-20</div>
+                                <div class="text-xs text-[#94a3b8] font-semibold">points</div>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm text-[#cbd5e1] font-semibold">Current Usage</span>
+                                <span class="text-sm text-red-400 font-bold">65%</span>
+                            </div>
+                            <div class="factor-progress-bar">
+                                <div class="factor-progress-fill bg-gradient-to-r from-red-500 to-orange-500" style="width: 65%;"></div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 p-3 bg-red-500/10 rounded-xl border border-red-500/20">
+                            <span class="text-red-400">📉</span>
+                            <p class="text-sm text-[#cbd5e1] flex-1">
+                                <strong class="text-red-400">Action Needed:</strong> Reduce to 30% for optimal score improvement.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Account Diversity - Enhanced -->
+                    <div class="factor-card-modern">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center gap-4">
+                                <div class="factor-icon-container bg-gradient-to-br from-purple-500 to-pink-500">
+                                    <span class="text-2xl relative z-10">📊</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-lg text-[#f8fafc] mb-1">Account Diversity</h3>
+                                    <p class="text-xs text-[#94a3b8] uppercase tracking-wider">Credit Factor</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-2xl font-black text-cyan-400 mb-1">+10</div>
+                                <div class="text-xs text-[#94a3b8] font-semibold">points</div>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm text-[#cbd5e1] font-semibold">Account Types</span>
+                                <span class="text-sm text-cyan-400 font-bold">2 Active</span>
+                            </div>
+                            <div class="factor-progress-bar">
+                                <div class="factor-progress-fill bg-gradient-to-r from-emerald-500 via-cyan-500 to-purple-500" style="width: 60%;"></div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 p-3 bg-cyan-500/10 rounded-xl border border-cyan-500/20">
+                            <span class="text-cyan-400">💎</span>
+                            <p class="text-sm text-[#cbd5e1] flex-1">
+                                <strong class="text-cyan-400">Good Progress:</strong> Adding 1 more account type would optimize this factor.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Additional Factor Placeholder -->
+                    <div class="factor-card-modern opacity-60">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center gap-4">
+                                <div class="factor-icon-container bg-gradient-to-br from-blue-500 to-indigo-500">
+                                    <span class="text-2xl relative z-10">⏱️</span>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-lg text-[#f8fafc] mb-1">Credit Age</h3>
+                                    <p class="text-xs text-[#94a3b8] uppercase tracking-wider">Credit Factor</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-2xl font-black text-blue-400 mb-1">+15</div>
+                                <div class="text-xs text-[#94a3b8] font-semibold">points</div>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm text-[#cbd5e1] font-semibold">Average Age</span>
+                                <span class="text-sm text-blue-400 font-bold">3.2 years</span>
+                            </div>
+                            <div class="factor-progress-bar">
+                                <div class="factor-progress-fill bg-gradient-to-r from-blue-500 to-indigo-500" style="width: 75%;"></div>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 p-3 bg-blue-500/10 rounded-xl border border-blue-500/20">
+                            <span class="text-blue-400">📈</span>
+                            <p class="text-sm text-[#cbd5e1] flex-1">
+                                <strong class="text-blue-400">Growing:</strong> Your credit history is building steadily over time.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Credit Score Simulator - Modern Design -->
+            <section class="mb-12" style="position: relative; z-index: 1;">
+                <h2 class="section-title-modern mb-2">🎯 Credit Score Simulator</h2>
+                <p class="text-[#cbd5e1] mb-6">Model different actions and see projected impact instantly</p>
+                
+                <div class="glass-card rounded-3xl p-8" style="position: relative; z-index: 1;">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="space-y-6">
+                            <div>
+                                <label class="flex items-center justify-between mb-3">
+                                    <span class="text-[#f8fafc] font-semibold">💳 Pay Down Credit Card Debt</span>
+                                    <span class="text-emerald-400 font-bold" id="sim-debt-value">$0</span>
+                                </label>
+                                <input type="range" id="sim-debt" min="0" max="5000" step="100" value="0" 
+                                       oninput="updateSimulator()" onchange="updateSimulator()" 
+                                       style="pointer-events: auto !important; cursor: pointer; z-index: 10; position: relative;">
+                                <div class="flex justify-between text-xs text-[#94a3b8] mt-1">
+                                    <span>$0</span>
+                                    <span>$5,000</span>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="flex items-center justify-between mb-3">
+                                    <span class="text-[#f8fafc] font-semibold">💰 Increase Monthly Income</span>
+                                    <span class="text-cyan-400 font-bold" id="sim-income-value">$0</span>
+                                </label>
+                                <input type="range" id="sim-income" min="0" max="2000" step="100" value="0" 
+                                       oninput="updateSimulator()" onchange="updateSimulator()" 
+                                       style="pointer-events: auto !important; cursor: pointer; z-index: 10; position: relative;">
+                                <div class="flex justify-between text-xs text-[#94a3b8] mt-1">
+                                    <span>$0</span>
+                                    <span>+$2,000</span>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="flex items-center justify-between mb-3">
+                                    <span class="text-[#f8fafc] font-semibold">🏦 Open New Account Type</span>
+                                    <span class="text-purple-400 font-bold" id="sim-account-value">None</span>
+                                </label>
+                                <select id="sim-account" onchange="updateSimulator()" 
+                                        style="pointer-events: auto !important; cursor: pointer; z-index: 10; position: relative;"
+                                        class="w-full px-4 py-3 bg-[#1a1a1a] border border-[#2d2d2d] rounded-xl text-[#f8fafc] focus:outline-none focus:border-emerald-500">
+                                    <option value="0">Select Account Type</option>
+                                    <option value="2">Credit Card (+2 pts)</option>
+                                    <option value="2">Personal Loan (+2 pts)</option>
+                                    <option value="1">Retail Account (+1 pt)</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="flex items-center justify-between mb-3">
+                                    <span class="text-[#f8fafc] font-semibold">📜 Add Verifiable Credential</span>
+                                    <span class="text-purple-400 font-bold" id="sim-vc-value">None</span>
+                                </label>
+                                <select id="sim-vc" onchange="updateSimulator()" 
+                                        style="pointer-events: auto !important; cursor: pointer; z-index: 10; position: relative;"
+                                        class="w-full px-4 py-3 bg-[#1a1a1a] border border-[#2d2d2d] rounded-xl text-[#f8fafc] focus:outline-none focus:border-emerald-500">
+                                    <option value="0">Select Credential Type</option>
+                                    <option value="3">Rent Payment History (+3 pts)</option>
+                                    <option value="3">Employment Letter (+3 pts)</option>
+                                    <option value="3">Education Degree (+3 pts)</option>
+                                    <option value="2">Professional Certification (+2 pts)</option>
+                                    <option value="3">DAO Membership (+3 pts)</option>
+                                    <option value="2">GitHub Verified Dev (+2 pts)</option>
+                                    <option value="2">Open Source Contributions (+2 pts)</option>
+                                    <option value="2">Community Service (+2 pts)</option>
+                                    <option value="2">Creative Portfolio (+2 pts)</option>
+                                    <option value="2">Verified Identity (+2 pts)</option>
+                                    <option value="3">Trust Badge (+3 pts)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col items-center justify-center">
+                            <div class="flex items-center gap-6 mb-6">
+                                <div class="text-center">
+                                    <p class="text-sm text-[#cbd5e1] mb-2">Current</p>
+                                    <div class="text-7xl font-black bg-gradient-to-r from-emerald-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent drop-shadow-2xl" id="sim-current-score" style="text-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);">68
+
+                                    </div>
+                                </div>
+                                <div class="text-5xl text-cyan-400 font-bold">→</div>
+                                <div class="text-center">
+                                    <p class="text-sm font-bold text-[#cbd5e1] mb-2 uppercase tracking-wide">Projected</p>
+                                    <div class="text-7xl font-black bg-gradient-to-r from-emerald-400 via-cyan-400 to-purple-400 bg-clip-text text-transparent drop-shadow-2xl" id="sim-projected-score" style="text-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);">68</div>
+                                </div>
+                            </div>
+                            <div class="glass-card px-6 py-3 rounded-xl" id="sim-change-badge">
+                                <span class="text-[#cbd5e1] font-semibold" id="sim-change-text">Adjust sliders to simulate</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Quest Widget Section -->
+            <section class="mb-12">
+                <div class="glass-card rounded-3xl p-12 text-center">
+                    <div class="text-8xl mb-4 float-animation">🎮</div>
+                    <h2 class="section-title-modern mb-3">Quest Center</h2>
+                    <p class="text-[#cbd5e1] mb-8 max-w-2xl mx-auto">
+                        Complete quests to earn NFTs and boost your credit score
+                    </p>
+                    <button onclick="openQuestWidget()" class="btn-modern text-lg px-8 py-4">
+                        <span class="mr-2">⚔️</span>
+                        View All Quests
+                    </button>
+                </div>
+            </section>
+            
+            <!-- Quest Widget Modal -->
+            <div id="quest-widget-modal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+                <div class="glass-card rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+                    <div class="sticky top-0 glass-card p-6 flex items-center justify-between border-b border-[#2a2a2a]">
+                        <div>
+                            <h2 class="text-2xl font-bold text-[#f8fafc] mb-1">⚔️ Quest Center</h2>
+                            <p class="text-[#cbd5e1] text-sm">Complete quests to earn NFTs and boost your credit score</p>
+                        </div>
+                        <button onclick="closeQuestWidget()" class="w-10 h-10 rounded-full bg-[#2d2d2d] hover:bg-[#3d3d3d] flex items-center justify-center text-[#f8fafc] text-xl transition-all">
+                            ✕
+                        </button>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                            <div class="glass-card p-4 rounded-xl text-center">
+                                <div class="text-2xl mb-2">🎯</div>
+                                <div class="text-2xl font-bold text-[#f8fafc] mb-1" id="quest-total">0</div>
+                                <div class="text-xs text-[#cbd5e1]">Total Quests</div>
+                            </div>
+                            <div class="glass-card p-4 rounded-xl text-center">
+                                <div class="text-2xl mb-2">✅</div>
+                                <div class="text-2xl font-bold text-[#f8fafc] mb-1" id="quest-completed">0</div>
+                                <div class="text-xs text-[#cbd5e1]">Completed</div>
+                            </div>
+                            <div class="glass-card p-4 rounded-xl text-center">
+                                <div class="text-2xl mb-2">💎</div>
+                                <div class="text-2xl font-bold text-[#f8fafc] mb-1" id="quest-nfts">0</div>
+                                <div class="text-xs text-[#cbd5e1]">NFTs Earned</div>
+                            </div>
+                            <div class="glass-card p-4 rounded-xl text-center">
+                                <div class="text-2xl mb-2">📈</div>
+                                <div class="text-2xl font-bold text-[#f8fafc] mb-1" id="quest-points">+0</div>
+                                <div class="text-xs text-[#cbd5e1]">Score Points</div>
+                            </div>
+                        </div>
+                        <div id="quest-widget-list">
+                            <div class="text-center py-12">
+                                <div class="inline-block w-12 h-12 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+                                <p class="text-[#cbd5e1]">Loading your quests...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Data Sources -->
+            <section class="mb-12">
+                <div class="flex gap-4 mb-6">
+                    <button onclick="window.location.href='wallet.html'" class="btn-modern">
+                        View VC Wallet
+                    </button>
+                    <button onclick="window.location.href='cross-border-verification.html'" class="btn-modern">
+                        🌍 Cross-Border Verification
+                    </button>
+                </div>
+                <h2 class="section-title-modern mb-2">🔗 Connected Data Sources</h2>
+                <p class="text-[#cbd5e1] mb-6">Your worldwide financial identity</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="glass-card rounded-2xl p-6 hover-scale">
+                        <div class="text-4xl mb-4">🏦</div>
+                        <h4 class="text-[#f8fafc] font-semibold mb-2">Plaid (Off-Chain)</h4>
+                        <button class="btn-modern w-full mt-4 text-sm" id="plaid-link-btn">Link Bank Account</button>
+                    </div>
+                </div>
+                <div id="plaid-accounts" class="mt-6"></div>
+                <div id="zkp-proof-statements" class="mt-6"></div>
+            </section>
+        </main>
+    </div>
+    
+    <!-- Load module script FIRST to set up window.issueQuestCompletionVC before professional-mode.js runs -->
+    <script type="module">
+        // Import VC issuance functions and XRPL config
+        import { issuePlaidConnectionVC, issueQuestCompletionVC } from './vc-issuance-integration.js';
+        import { isXRPLConfigured } from './xrpl-config.js';
+        import { 
+            isMetaMaskInstalled, 
+            issuePlaidConnectionVCWithMetaMask, 
+            issueQuestCompletionVCWithMetaMask 
+        } from './metamask-xrpl-integration.js';
+        
+        // Track MetaMask Snap failures - skip it if it keeps failing
+        let metamaskSnapFailureCount = 0;
+        const MAX_METAMASK_FAILURES = 0; // No retries - use fallback immediately after connection
+        
+        // Try MetaMask XRPL Snap first (no retries)
+        window.issuePlaidConnectionVC = async function(metadata) {
+            if (isMetaMaskInstalled()) {
+                try {
+                    console.log('🔷 Connecting to MetaMask XRPL Snap...');
+                    const result = await issuePlaidConnectionVCWithMetaMask(metadata);
+                    // Add VC to wallet
+                    if (typeof window.addVCToWalletFromXRPL === 'function') {
+                        window.addVCToWalletFromXRPL(result);
+                    }
+                    return result;
+                } catch (error) {
+                    console.warn('⚠️ MetaMask XRPL Snap connection failed:', error);
+                    // Fallback directly (no retries)
+                    return await issuePlaidConnectionVC(metadata);
+                }
+            } else {
+                // No MetaMask - use fallback
+                return await issuePlaidConnectionVC(metadata);
+            }
+        };
+        
+        window.issueQuestCompletionVC = async function(questId, questTitle, txHash, tokenId, userAddress) {
+            if (isMetaMaskInstalled()) {
+                try {
+                    console.log('🔷 Connecting to MetaMask XRPL Snap...');
+                    const result = await issueQuestCompletionVCWithMetaMask(questId, questTitle, txHash, tokenId, userAddress);
+                    // Add VC to wallet
+                    if (typeof window.addVCToWalletFromXRPL === 'function') {
+                        window.addVCToWalletFromXRPL(result);
+                    }
+                    return result;
+                } catch (error) {
+                    console.warn('⚠️ MetaMask XRPL Snap connection failed:', error);
+                    // Fallback directly (no retries)
+                    return await issueQuestCompletionVC(questId, questTitle, txHash, tokenId, userAddress);
+                }
+            } else {
+                // No MetaMask - use fallback
+                return await issueQuestCompletionVC(questId, questTitle, txHash, tokenId, userAddress);
+            }
+        };
+        
+        // Check XRPL status on load
+        if (isMetaMaskInstalled()) {
+            console.log('✅ MetaMask detected - XRPL Snap will be used for VC issuance');
+        } else if (isXRPLConfigured()) {
+            console.log('✅ XRPL configured - VCs will be stored on XRPL blockchain via backend');
+        } else {
+            console.warn('⚠️ XRPL not configured. Install MetaMask XRPL Snap or update xrpl-config.js');
+        }
+    </script>
+    
+    <!-- Load professional-mode.js AFTER the module has set up window functions -->
+    <!-- Using defer ensures it waits for DOMContentLoaded, giving the module time to load -->
+    <script src="professional-mode.js" defer></script>
+</body>
+</html>
