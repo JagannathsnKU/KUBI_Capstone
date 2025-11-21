@@ -2650,7 +2650,7 @@ select option {
 .modern-header-left {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 0;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     padding: 4px 8px;
@@ -2663,59 +2663,67 @@ select option {
 }
 
 .modern-header-logo {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    background: linear-gradient(135deg, #10b981 0%, #06b6d4 50%, #a855f7 100%);
+    width: 48px;
+    height: 48px;
+    border-radius: 0;
+    background: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 18px;
-    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    box-shadow: none;
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
-    overflow: hidden;
+    overflow: visible;
+    margin-right: 0;
+    flex-shrink: 0;
+}
+
+.modern-header-logo svg,
+.modern-header-logo img,
+.eden-logo-img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: contain;
 }
 
 .modern-header-logo::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    transition: left 0.5s ease;
+    display: none;
 }
 
 .modern-header-left:hover .modern-header-logo {
-    transform: scale(1.08) rotate(8deg);
-    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.5),
-                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    transform: scale(1.08);
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
 }
 
-.modern-header-left:hover .modern-header-logo::before {
-    left: 100%;
+.modern-header-left:hover .modern-header-logo svg {
+    filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.6));
 }
 
 .modern-header-brand {
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 0;
+    align-items: flex-start;
+    margin-left: -20px;
 }
 
 .modern-header-title {
-    font-size: 1.05rem;
+    font-size: 1.6rem;
     font-weight: 700;
-    background: linear-gradient(135deg, #10b981 0%, #06b6d4 50%, #a855f7 100%);
-    -webkit-background-clip: text;
+    letter-spacing: 0.25em;
+    -webkit-text-stroke: 2px var(--text-primary);
     -webkit-text-fill-color: transparent;
-    background-clip: text;
-    letter-spacing: -0.2px;
-    line-height: 1.3;
+    color: var(--text-primary);
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+    line-height: 1;
+    font-family: 'Space Grotesk', 'Outfit', 'DM Sans', 'Inter', sans-serif;
+    /* Outline text style - large, bold, outlined white text matching Canva design */
+    background: none;
+    -webkit-background-clip: unset;
+    background-clip: unset;
+    text-transform: uppercase;
 }
 
 .modern-header-mode {
