@@ -1851,6 +1851,84 @@
       "subjectDid": "did:xrpl:user:789",
       "chainOfTrust": "vc:bank:did:xrpl:BangaloreBank:123:1763691657053",
       "createdAt": "2025-11-21T02:21:17.888Z"
+    },
+    {
+      "vcId": "vc:bank:did:xrpl:BangaloreBank:123:1763695709916",
+      "vc": {
+        "@context": [
+          "https://www.w3.org/2018/credentials/v1"
+        ],
+        "id": "vc:bank:did:xrpl:BangaloreBank:123:1763695709916",
+        "type": [
+          "VerifiableCredential",
+          "BankLegitimacyCredential"
+        ],
+        "issuer": {
+          "id": "did:xrpl:IndianRegulator:456"
+        },
+        "issuanceDate": "2025-11-21T03:28:29.916Z",
+        "expirationDate": "2026-11-21T03:28:29.916Z",
+        "credentialSubject": {
+          "id": "did:xrpl:BangaloreBank:123",
+          "bankName": "Bangalore Bank",
+          "licenseNumber": "IN-BANK-2024-001",
+          "jurisdiction": "India",
+          "verified": true,
+          "verificationDate": "2025-11-21T03:28:29.916Z"
+        },
+        "proof": {
+          "type": "Ed25519Signature2020",
+          "created": "2025-11-21T03:28:29.916Z",
+          "proofPurpose": "assertionMethod",
+          "verificationMethod": "did:xrpl:IndianRegulator:456#keys-1"
+        }
+      },
+      "txHash": "134F7D4A79769D5B9F440B8E6FAE2B72D3DF0B432027A65C690F100638CAE038",
+      "type": "BankLegitimacyCredential",
+      "issuerDid": "did:xrpl:IndianRegulator:456",
+      "subjectDid": "did:xrpl:BangaloreBank:123",
+      "createdAt": "2025-11-21T03:28:29.923Z"
+    },
+    {
+      "vcId": "vc:user:did:xrpl:user:789:1763695730588",
+      "vc": {
+        "@context": [
+          "https://www.w3.org/2018/credentials/v1"
+        ],
+        "id": "vc:user:did:xrpl:user:789:1763695730588",
+        "type": [
+          "VerifiableCredential",
+          "PaymentHistoryCredential"
+        ],
+        "issuer": {
+          "id": "did:xrpl:BangaloreBank:123"
+        },
+        "issuanceDate": "2025-11-21T03:28:50.589Z",
+        "expirationDate": "2026-05-20T03:28:50.589Z",
+        "credentialSubject": {
+          "id": "did:xrpl:user:789",
+          "userAddress": "0x1234567890123456789012345678901234567890",
+          "yearsOfHistory": 5,
+          "onTimePayments": 60,
+          "totalPayments": 60,
+          "averageAmount": 1000,
+          "country": "India",
+          "bankName": "Bangalore Bank"
+        },
+        "proof": {
+          "type": "Ed25519Signature2020",
+          "created": "2025-11-21T03:28:50.589Z",
+          "proofPurpose": "assertionMethod",
+          "verificationMethod": "did:xrpl:BangaloreBank:123#keys-1"
+        },
+        "chainOfTrust": "vc:bank:did:xrpl:BangaloreBank:123:1763695709916"
+      },
+      "txHash": "EB02C2566DA54FB462827C970BAD2802AE8D940770F2E7609305DEAF868D7982",
+      "type": "PaymentHistoryCredential",
+      "issuerDid": "did:xrpl:BangaloreBank:123",
+      "subjectDid": "did:xrpl:user:789",
+      "chainOfTrust": "vc:bank:did:xrpl:BangaloreBank:123:1763695709916",
+      "createdAt": "2025-11-21T03:28:50.603Z"
     }
   ],
   "transactions": [
@@ -2141,6 +2219,18 @@
       "type": "payment_history_vc",
       "vcId": "vc:user:did:xrpl:user:789:1763691677875",
       "timestamp": "2025-11-21T02:21:17.888Z"
+    },
+    {
+      "txHash": "134F7D4A79769D5B9F440B8E6FAE2B72D3DF0B432027A65C690F100638CAE038",
+      "type": "bank_legitimacy_vc",
+      "vcId": "vc:bank:did:xrpl:BangaloreBank:123:1763695709916",
+      "timestamp": "2025-11-21T03:28:29.923Z"
+    },
+    {
+      "txHash": "EB02C2566DA54FB462827C970BAD2802AE8D940770F2E7609305DEAF868D7982",
+      "type": "payment_history_vc",
+      "vcId": "vc:user:did:xrpl:user:789:1763695730588",
+      "timestamp": "2025-11-21T03:28:50.603Z"
     }
   ]
 }

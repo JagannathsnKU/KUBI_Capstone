@@ -1,0 +1,17 @@
+<svg width="200" height="80" viewBox="0 0 200 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- EDEN Text -->
+  <text x="10" y="50" font-family="'Space Grotesk', 'Outfit', 'DM Sans', 'Inter', sans-serif" font-size="32" font-weight="700" fill="#000000">EDEN</text>
+  
+  <!-- Tree Graphic -->
+  <g transform="translate(120, 20)">
+    <!-- Brown vertical trunk -->
+    <line x1="20" y1="5" x2="20" y2="35" stroke="#8B4513" stroke-width="3" stroke-linecap="round"/>
+    
+    <!-- Left: Outlined triangle leaf (brown border, white interior) -->
+    <path d="M20 5 L10 20 L20 30 Z" fill="#FFFFFF" stroke="#8B4513" stroke-width="2.5" stroke-linejoin="miter" stroke-linecap="round"/>
+    
+    <!-- Right: Solid lime green diamond/rhombus leaf -->
+    <path d="M20 5 L30 15 L20 30 L30 20 Z" fill="#32CD32" stroke="#32CD32" stroke-width="0.5"/>
+  </g>
+</svg>
+
